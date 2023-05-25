@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using System.Xml;
 using System.Xml.Linq;
 
-namespace XMLib.Core
+namespace XMLib
 {
     public class XParticle // not struct because content can be > 16 bytes
     {

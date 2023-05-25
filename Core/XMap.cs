@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 using System.Xml;
 using System.Xml.Linq;
 
-namespace XMLib.Core
+namespace XMLib
 {
     /// <summary>
     /// Represents an XML document, mapped for element access with XPath notation.
