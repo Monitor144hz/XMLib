@@ -40,13 +40,21 @@ namespace XMLib
         public static new XMap Load(string uri) => new XMap(XDocument.Load(uri));
         public static new XMap Load(XmlReader xmlReader) => new XMap(XDocument.Load(xmlReader));
 
-        public XElement this[string s]
+        public XElement? this[string key]
         {
-            get => dict[s]; 
-            set => dict[s] = value;
+            get 
+            {
+                XElement? element; 
+                return dict.TryGetValue(key, out element) ? element! : null;
+            }
+            set 
+            {
+                if (dict.ContainsKey(key)) dict[key] = value!;
+            }
         }
 
-
+        public bool RemoveElement(string key) => dict.Remove(key);
+        public void AddElement(string key, XElement element) => dict.Add(key, element);
 
 
         public Action<string> Log { get; set; } = (message) => Console.WriteLine(message);

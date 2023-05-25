@@ -13,7 +13,7 @@ namespace XMLib
     {
 
         public XObject Content { get; }
-        public string stringData { get; set; } = string.Empty;
+        public string StringData { get; set; } = string.Empty;
         private Func<XObject,XParticle, bool> XAction { get; set; } = (obj, xp) => true;
 
         public XParticle(XObject cont)
@@ -23,7 +23,7 @@ namespace XMLib
         public XParticle(XObject cont, string stringData)
         {
             Content = cont;
-            this.stringData = stringData;
+            this.StringData = stringData;
         }
 
         public XParticle(XObject cont, Func<XObject,XParticle, bool> func)
@@ -35,7 +35,7 @@ namespace XMLib
         {
             Content = cont;
             XAction = func;
-            this.stringData = stringData;
+            this.StringData = stringData;
         }
         public void SetWork(Func<XObject, XParticle, bool> func) => XAction = func;
         
