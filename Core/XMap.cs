@@ -52,9 +52,35 @@ namespace XMLib
                 if (dict.ContainsKey(key)) dict[key] = value!;
             }
         }
+        public bool RemoveElement(string key) 
+        {
+            XElement element = this[key]!;
+            lock(element.Parent!) { lock(element){ element.Remove();  }} //remove from xml tree
+            return true;
+        }
+        public bool AddChildElement(string key, XElement newElement) 
+        {
+            XElement? element = this[key]; 
+            dict.Add(key, newElement);
 
-        public bool RemoveElement(string key) => dict.Remove(key);
-        public void AddElement(string key, XElement element) => dict.Add(key, element);
+            return true;
+        }
+        public bool AddElementAfter(string key, XElement newElement) 
+        {
+            return true;
+        }
+
+        public bool AddElementBefore(string key, XElement newElement)
+        {
+            return true;
+        }
+        public bool ReplaceElement(string key, XElement newElement)
+        {
+            XElement? element = this[key];
+            if (element is null || element.Parent is null) return false; //null check
+            lock(element.Parent) { lock(element){ element.ReplaceWith(newElement);  }} 
+            return true; 
+        }
 
 
         public Action<string> Log { get; set; } = (message) => Console.WriteLine(message);
