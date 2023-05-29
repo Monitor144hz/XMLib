@@ -44,6 +44,8 @@ public class XMap : XDocument
     public static new XMap Load(string uri) => new XMap(XDocument.Load(uri));
     public static new XMap Load(XmlReader xmlReader) => new XMap(XDocument.Load(xmlReader));
 
+
+    public List<string> GetPathList() => dict.Keys.ToList();
     public XElement? this[string key]
     {
         get 
@@ -103,8 +105,8 @@ public class XMap : XDocument
 
         bool IsOpenPath = (path != string.Empty && path[path.Length-1] != XPATH_DIVIDER);
         
-        StringBuilder defaultPathBuilder =  IsOpenPath ? new StringBuilder(path).Append(defaultValue).Append(elementIndex) : new StringBuilder(path).Append(XPATH_DIVIDER).Append(defaultValue).Append(elementIndex);
-        StringBuilder pathBuilder = IsOpenPath ? new StringBuilder(path) : new StringBuilder(path).Append(XPATH_DIVIDER);
+        StringBuilder defaultPathBuilder =  !IsOpenPath ? new StringBuilder(path).Append(defaultValue).Append(elementIndex) : new StringBuilder(path).Append(XPATH_DIVIDER).Append(defaultValue).Append(elementIndex);
+        StringBuilder pathBuilder = !IsOpenPath ? new StringBuilder(path) : new StringBuilder(path).Append(XPATH_DIVIDER);
         switch (KeyType)
         {
             case KeyTypes.XAttribute:
@@ -172,4 +174,41 @@ public class XMap : XDocument
             defaultCount++;
         }
     }
+    public XCompare Compare(XMap otherMap) 
+    {
+        XNodeEqualityComparer comparer = new XNodeEqualityComparer();
+        XCompare compare = new XCompare();
+        List<string> Paths = GetPathList();
+
+        List<string> otherPaths = otherMap.GetPathList();
+        
+        foreach(string path in Paths)
+        {
+            if (otherMap[path] is null)
+            {
+                compare.DifferencesByPath.Add(path, XDifference.XRemove); 
+                continue;
+            } 
+
+            // if (!comparer.Equals(this[path], otherMap[path]))
+            // {
+            //     compare.DifferencesByPath.Add(path, XDifference.XChange); 
+            //     continue; 
+            // }
+            
+        }
+
+        foreach(string path in otherPaths)
+        {
+            // if (!path.Contains(XPATH_DIVIDER) && this[path] is null) Console.WriteLine(path);
+            if (this[path] is null) 
+            {
+                
+                compare.DifferencesByPath.Add(path, XDifference.XAppend);
+            }
+        }
+        
+        return compare;
+    }
+    
 }
