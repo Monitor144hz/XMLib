@@ -132,7 +132,7 @@ public class XMap : XDocument
     
     public bool Map(int skipdepth)
     {
-
+        dict.Clear();
         try
         {
             if (Root!.HasElements)
