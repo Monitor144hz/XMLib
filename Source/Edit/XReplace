@@ -1,0 +1,31 @@
+using System.Xml.Linq;
+namespace XMLib; 
+
+public class XReplace : XEdit 
+{
+    public virtual void Run()
+    {
+        
+        lock(originalElement)
+        lock(originalElement.)
+        originalElement.ReplaceWith(newElement); 
+        // throw new NotImplementedException(); 
+    }
+
+    public async virtual Task RunAsync() 
+    {
+        await Task.Run(() => Run()); 
+    }
+
+    private XElement originalElement { get; set; }
+
+    private XElement newElement { get; set; }
+
+    public XReplace(XElement originalElement, XElement newElement)
+    {
+        this.originalElement = originalElement; 
+        this.newElement = newElement; 
+    }
+
+    
+}

@@ -24,6 +24,8 @@ public class XMapElement
 
     public string GetKeyFromNameAttribute(XElement element) => element.Attribute("name")!.Value; 
 
+
+    
     public XElement this[string key]
     {
         // get
@@ -38,27 +40,31 @@ public class XMapElement
         get => dict[key] ; 
         set => dict[key] = value; 
     }
+    
+    private string GetDefaultPath(string path,string defaultValue, int elementIndex) 
+    {   
+        bool IsOpenPath = (path != string.Empty && path[path.Length - 1] != XPATH_DIVIDER);
+        StringBuilder defaultBuilder = new StringBuilder(path); 
+        if (IsOpenPath) defaultBuilder.Append(XPATH_DIVIDER); 
+        defaultBuilder.Append(defaultValue).Append(elementIndex); 
+        return defaultBuilder.ToString(); 
+    }
+
+    private string GetUniquePath(string path, string key)
+    {
+        bool IsOpenPath = (path != string.Empty && path[path.Length - 1] != XPATH_DIVIDER);
+        StringBuilder uniqueBuilder = new StringBuilder(path); 
+
+        if (IsOpenPath) uniqueBuilder.Append(XPATH_DIVIDER);
+        uniqueBuilder.Append(key); 
+        return uniqueBuilder.ToString(); 
+    }
     private string MapChildElement(string path, XElement element, int elementIndex)
     {
-        //Console.WriteLine($"XPath {path} keyName {keyName}");
-        //Console.WriteLine(element);
-
-        string defaultValue = XmlNodeType.Element.ToString();
-
-        bool IsOpenPath = (path != string.Empty && path[path.Length - 1] != XPATH_DIVIDER);
-
-        StringBuilder defaultPathBuilder = !IsOpenPath ? new StringBuilder(path).Append(defaultValue).Append(elementIndex) : new StringBuilder(path).Append(XPATH_DIVIDER).Append(defaultValue).Append(elementIndex);
-        StringBuilder pathBuilder = !IsOpenPath ? new StringBuilder(path) : new StringBuilder(path).Append(XPATH_DIVIDER);
-        pathBuilder.Append(GenerateKey(element)); 
-        string elementPath = pathBuilder.ToString();
-        string defaultPath = defaultPathBuilder.ToString();
-
-        if (elementPath != defaultPath) dict.Add(elementPath, element);
-        dict.Add(defaultPathBuilder.ToString(), element);
-
-        //Console.WriteLine($"Path: {elementPath} Default Path: {defaultPath}");
-        return elementPath;
-
+        string defaultValue = Element.NodeType.ToString();
+        string key = GenerateKey(element);
+         
+        return (key == defaultValue) ? GetDefaultPath(path, defaultValue, elementIndex) : GetUniquePath(path, key);  
     }
 
     public bool Map()
@@ -92,10 +98,7 @@ public class XMapElement
         foreach (XElement childElement in ChildElements)
         {
             elementName = MapChildElement(path, childElement, defaultCount);
-            if (childElement.HasElements)
-            {
-                MapSubTree(elementName, childElement.Elements());
-            }
+            if (childElement.HasElements)  MapSubTree(elementName, childElement.Elements());
             defaultCount++;
         }
     }
