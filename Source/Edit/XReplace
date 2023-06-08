@@ -3,16 +3,18 @@ namespace XMLib;
 
 public class XReplace : XEdit 
 {
-    public virtual void Run()
+    public void Run()
     {
         
         lock(originalElement)
-        lock(originalElement.)
+        lock(originalElement.Parent)
         originalElement.ReplaceWith(newElement); 
+
+        
         // throw new NotImplementedException(); 
     }
 
-    public async virtual Task RunAsync() 
+    public async Task RunAsync() 
     {
         await Task.Run(() => Run()); 
     }
